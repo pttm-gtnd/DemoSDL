@@ -7,104 +7,51 @@
 
 using namespace std;
 
-const int SCREEN_WIDTH = 900;
-const int SCREEN_HEIGHT = 700;
-const char* WINDOW_TITLE = "Battle City";
+const int SCREEN_WIDTH = 800;
+const int SCREEN_HEIGHT = 600;
 const int TILE_SIZE = 40;
+const int MAP_WIDTH = SCREEN_WIDTH / TILE_SIZE;
+const int MAP_HEIGHT = SCREEN_HEIGHT / TILE_SIZE;
 
-void logErrorAndExit(const char* msg, const char* error)
-{
-    SDL_LogMessage(SDL_LOG_CATEGORY_APPLICATION, SDL_LOG_PRIORITY_ERROR, "%s: %s", msg, error);
-    SDL_Quit();
-}
-
-SDL_Window* initSDL(int SCREEN_WIDTH, int SCREEN_HEIGHT, const char* WINDOW_TITLE)
-{
-    if (SDL_Init(SDL_INIT_EVERYTHING) != 0)
-        logErrorAndExit("SDL_Init", SDL_GetError());
-
-    SDL_Window* window = SDL_CreateWindow(WINDOW_TITLE, SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
-    if (window == nullptr) logErrorAndExit("CreateWindow", SDL_GetError());
-
-    return window;
-}
-
-SDL_Renderer* createRenderer(SDL_Window* window)
-{
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-    if (renderer == nullptr) logErrorAndExit("CreateRenderer", SDL_GetError());
-
-    SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
-    SDL_RenderSetLogicalSize(renderer, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-    return renderer;
-}
-
-void quitSDL(SDL_Window* window, SDL_Renderer* renderer)
-{
-    SDL_DestroyRenderer(renderer);
-    SDL_DestroyWindow(window);
-    SDL_Quit();
-}
-
-class Bullet {
+class Game{
 public:
-    SDL_Rect rect;
-    int speed;
-    bool active;
+    SDL_Window* window;
+    SDL_Renderer* renderer;
+    bool running;
 
-    Bullet(int x, int y) {
-        rect = {x, y, 5, 10};
-        speed = 6;
-        active = true;
+    Game() {
+        running = true;
+        if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+            cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
+            running = false;
+        }
+        window = SDL_CreateWindow("Battle City", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH,
+                                  SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
+        if (!window) {
+            cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
+            running = false;
+        }
+        renderer = SDL_CreateRender(window, -1, SDL_RENDERER_ACCELERATED);
+        if (!renderer) {
+            cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
+            running = false;
+        }
     }
+    void render() {
+        SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
+        SDL_RenderClear(renderer);
 
-    void move() {
-        rect.y -= speed;
-        if (rect.y < 0) active = false;
-    }
-
-    void draw(SDL_Renderer* renderer) {
-        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &rect);
+        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+        for (int i = 1; i < MAP_HEIGHT - 1; ++i) {
+            for (int j = 1; j < MAP_WIDTH - 1; ++ i) {
+                SDL_Rect tile = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
+                SDL_RenderFillRect(renderer, &tile);
+            }
+        }
+        SDL_RenderPresent(renderer);
     }
 };
 
-class Tank {
-public:
-    SDL_Rect rect;
-    float speed;
-    vector<Bullet> bullets;
-
-    Tank(int x, int y) {
-        rect = {x, y, TILE_SIZE, TILE_SIZE};
-        speed = 4.0f;
-    }
-
-    void move(int dx, int dy) {
-        rect.x += dx * speed;
-        rect.y += dy * speed;
-    }
-
-    void shoot() {
-        bullets.push_back(Bullet(rect.x + TILE_SIZE / 2 - 2, rect.y));
-    }
-
-    void updateBullets() {
-        for (auto& bullet : bullets) {
-            bullet.move();
-        }
-        bullets.erase(remove_if(bullets.begin(), bullets.end(), [](Bullet& b) { return !b.active; }), bullets.end());
-    }
-
-    void draw(SDL_Renderer* renderer) {
-        SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
-        SDL_RenderFillRect(renderer, &rect);
-        for (auto& bullet : bullets) {
-            bullet.draw(renderer);
-        }
-    }
-};
 
 int main(int argc, char* argv[])
 
