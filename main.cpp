@@ -31,7 +31,7 @@ public:
             cerr << "Window could not be created! SDL_Error: " << SDL_GetError() << endl;
             running = false;
         }
-        renderer = SDL_CreateRender(window, -1, SDL_RENDERER_ACCELERATED);
+        renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
         if (!renderer) {
             cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
             running = false;
@@ -50,41 +50,26 @@ public:
         }
         SDL_RenderPresent(renderer);
     }
+    void run() {
+        while (running) {
+            render();
+            SDL_Delay(16);
+        }
+    }
+    ~Game() {
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+    }
 };
 
 
 int main(int argc, char* argv[])
 
 {
-    SDL_Window* window = initSDL(SCREEN_WIDTH, SCREEN_HEIGHT, WINDOW_TITLE);
-    SDL_Renderer* renderer = createRenderer(window);
-
-    Tank player(SCREEN_WIDTH / 2, SCREEN_HEIGHT - TILE_SIZE * 2);
-    bool running = true;
-    SDL_Event event;
-
-    while (running) {
-        while (SDL_PollEvent(&event)) {
-            if (event.type == SDL_QUIT) {
-                running = false;
-            }
-        }
-
-        const Uint8* keystate = SDL_GetKeyboardState(NULL);
-        int dx = 0, dy = 0;
-        if (keystate[SDL_SCANCODE_W]) dy = -1;
-        if (keystate[SDL_SCANCODE_S]) dy = 1;
-        if (keystate[SDL_SCANCODE_A]) dx = -1;
-        if (keystate[SDL_SCANCODE_D]) dx = 1;
-        player.move(dx, dy);
-
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        SDL_RenderClear(renderer);
-
-        player.draw(renderer);
-        SDL_RenderPresent(renderer);
-    }
-
-    quitSDL(window, renderer);
+   Game game;
+   if (game.running) {
+       game.run();
+   }
     return 0;
 }
