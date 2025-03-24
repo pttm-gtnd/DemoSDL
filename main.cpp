@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_main.h>
 #include <vector>
+#include <algorithm>
 
 using namespace std;
 
@@ -37,6 +38,9 @@ public:
     int x, y;
     int dirX, dirY;
     SDL_Rect rect;
+    vector<Bullet> bullets;
+
+    PlayerTank() : x(0), y(0), dirX(0), dirY(-1), rect{0, 0, TILE_SIZE, TILE_SIZE} {}
 
     PlayerTank (int startX, int startY) {
         x = startX;
@@ -70,6 +74,58 @@ public:
         SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
         SDL_RenderFillRect(renderer, &rect);
     }
+
+};
+
+class Bullet {
+public:
+    int x, y;
+    int dx, dy;
+    SDL_Rect rect;
+    bool active;
+
+    Bullet(int startX, int startY, int dirX, int dirY) {
+        x = startX;
+        y = startY;
+        dx = dirX;
+        dy = dirY;
+        active = true;
+        rect = {x, y, 10, 10};
+    }
+    void move() {
+        x += dx;
+        y += dy;
+        rect.x = x;
+        rect.y = y;
+        if (x < TILE_SIZE || x > SCREEN_WIDTH - TILE_SIZE ||
+            y < TILE_SIZE || Y > SCREEN_HEIGHT - TILE_SIZE) {
+                active = false;
+            }
+    }
+    void render(SDL_Renderer* renderer) {
+        if (active) {
+            SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+            SDL_RenderFillRect(renderer, &rect);
+        }
+    }
+    void shoot() {
+        bullets.push_back(Bullet(x + TILE_SIZE / 2 - 5, y + TILE_SIZE / 2 - 5,
+                                 this->dirX, this->dirY));
+    }
+    void updateBullets() {
+        for (auto &bullet : bullets) {
+            bullet.move();
+        }
+        bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+                                     [](Bullet &b) {return !b.active;}), bullets.end());
+    }
+    void render(SDL_Renderer* renderer) {
+        SDL_SetRenderDrawColor(renderer, 255, 255, 0, 255);
+        SDL_RenderFillRect(renderer, &rect);
+        for (auto &bullet : bullets) {
+            bullet.render(renderer);
+        }
+    }
 };
 
 class Game{
@@ -80,7 +136,7 @@ public:
     vector<Wall> walls;
     PlayerTank player;
 
-    Game() {
+    Game() : player(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE) {
         running = true;
         if (SDL_Init(SDL_INIT_VIDEO) < 0) {
             cerr << "SDL could not initialize! SDL_Error: " << SDL_GetError() << endl;
@@ -98,7 +154,7 @@ public:
             running = false;
         }
         generateWalls();
-        player = PlayerTank(((MAP_WIDTH - 1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
+        player = PlayerTank(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE);
     }
 
     void generateWalls() {
@@ -121,6 +177,21 @@ public:
                     case SDLK_DOWN: player.move(0, 5, walls); break;
                     case SDLK_LEFT: player.move(-5, 0, walls); break;
                     case SDLK_RIGHT: player.move(5, 0, walls); break;
+                    case SDL_SPACE: player.shoot(); break;
+                }
+            }
+        }
+    }
+
+    void update() {
+        player.updateBullets();
+
+        for (auto& bullet : player.bullets) {
+            for (auto& wall : walls) {
+                if (wall.active && SDL_HasIntersection(&bullet.rect, &wall.rect)) {
+                    wall.active = false;
+                    bullet.active = false;
+                    break;
                 }
             }
         }
@@ -146,6 +217,7 @@ public:
     void run() {
         while (running) {
             handleEvents();
+            update();
             render();
             SDL_Delay(16);
         }
