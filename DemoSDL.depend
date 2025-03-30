@@ -31,13 +31,14 @@
 1743312206 c:\codec++\demosdl\wall.h
 	<SDL.h>
 
-1743345321 source:c:\codec++\demosdl\game.cpp
+1743349235 source:c:\codec++\demosdl\game.cpp
+	<SDL_image.h>
 	"Game.h"
 	<iostream>
 	"Constants.h"
 	<algorithm>
 
-1743312206 c:\codec++\demosdl\game.h
+1743347948 c:\codec++\demosdl\game.h
 	<SDL.h>
 	<vector>
 	"PlayerTank.h"
@@ -52,7 +53,7 @@
 1743345353 source:c:\codec++\demosdl\main.cpp
 	"Game.h"
 
-1743312206 source:c:\codec++\demosdl\playertank.cpp
+1743345489 source:c:\codec++\demosdl\playertank.cpp
 	"PlayerTank.h"
 	"Constants.h"
 	<algorithm>

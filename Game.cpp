@@ -1,10 +1,11 @@
-
+#include <SDL_image.h>
 #include "Game.h"
 #include <iostream>
 #include "Constants.h"
 #include <algorithm>
 
 using namespace std;
+SDL_Texture* background;
 
 Game::Game() : player(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE) {
     running = true;
@@ -23,11 +24,22 @@ Game::Game() : player(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_
             cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
             running = false;
         }
+        SDL_Surface* tempSurface = IMG_Load("C:/Users/PC/Downloads/background.jpg");
+        if (tempSurface) {
+        background = SDL_CreateTextureFromSurface(renderer, tempSurface);
+        SDL_FreeSurface(tempSurface);
+        } else {
+        cerr << "Failed to load background: " << IMG_GetError() << endl;
+        background = nullptr;
+    }
         generateWalls();
         spawnEnemies();
 }
 
 Game::~Game() {
+        if (background) {
+        SDL_DestroyTexture(background);
+        }
         SDL_DestroyRenderer(renderer);
         SDL_DestroyWindow(window);
         SDL_Quit();
@@ -135,15 +147,11 @@ void Game::update() {
 }
 
 void Game::render() {
-    SDL_SetRenderDrawColor(renderer, 128, 128, 128, 255);
         SDL_RenderClear(renderer);
+        SDL_RenderCopy(renderer, background, NULL, NULL);
 
-        SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-        for (int i = 1; i < MAP_HEIGHT - 1; ++i) {
-            for (int j = 1; j < MAP_WIDTH - 1; ++ j) {
-                SDL_Rect tile = { j * TILE_SIZE, i * TILE_SIZE, TILE_SIZE, TILE_SIZE };
-                SDL_RenderFillRect(renderer, &tile);
-            }
+        if (background) {
+        SDL_RenderCopy(renderer, background, NULL, NULL);
         }
 
         for (int i = 0; i < walls.size(); i++) {

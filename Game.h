@@ -13,6 +13,7 @@ class Game {
 public:
     SDL_Window* window;
     SDL_Renderer* renderer;
+    SDL_Texture* background;
     bool running;
     vector<Wall> walls;
     PlayerTank player;
