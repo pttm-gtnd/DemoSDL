@@ -16,7 +16,7 @@
 
 1743312206 c:\codec++\demosdl\constants.h
 
-1743312206 source:c:\codec++\demosdl\enemytank.cpp
+1743339737 source:c:\codec++\demosdl\enemytank.cpp
 	"EnemyTank.h"
 	"Constants.h"
 	<SDL.h>
@@ -31,7 +31,7 @@
 1743312206 c:\codec++\demosdl\wall.h
 	<SDL.h>
 
-1743312206 source:c:\codec++\demosdl\game.cpp
+1743345321 source:c:\codec++\demosdl\game.cpp
 	"Game.h"
 	<iostream>
 	"Constants.h"
@@ -49,7 +49,7 @@
 	"Bullet.h"
 	"Wall.h"
 
-1743312206 source:c:\codec++\demosdl\main.cpp
+1743345353 source:c:\codec++\demosdl\main.cpp
 	"Game.h"
 
 1743312206 source:c:\codec++\demosdl\playertank.cpp
@@ -60,4 +60,12 @@
 1743312206 source:c:\codec++\demosdl\wall.cpp
 	"Wall.h"
 	"Constants.h"
+
+1743339401 c:\codec++\demosdl\menu.h
+	<SDL.h>
+	<SDL_image.h>
+
+1743343977 source:c:\codec++\demosdl\menu.cpp
+	"Menu.h"
+	<iostream>
 
