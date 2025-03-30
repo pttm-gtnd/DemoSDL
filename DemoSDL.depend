@@ -1,0 +1,9 @@
+# depslib dependency file v1.0
+1743219336 source:c:\codec++\btgame\main.cpp
+	<iostream>
+	<SDL.h>
+	<SDL_main.h>
+	<SDL_image.h>
+	<vector>
+	<algorithm>
+

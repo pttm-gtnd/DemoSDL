@@ -1,6 +1,7 @@
 #include <iostream>
 #include <SDL.h>
 #include <SDL_main.h>
+#include <SDL_image.h>
 #include <vector>
 #include <algorithm>
 
@@ -137,7 +138,7 @@ public:
         for (auto &bullet : bullets) {
             bullet.move();
         }
-        bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+        bullets.erase(remove_if(bullets.begin(), bullets.end(),
                                      [](Bullet &b) {return !b.active;}), bullets.end());
     }
 
@@ -196,7 +197,7 @@ public:
         for (auto &bullet : bullets) {
             bullet.move();
         }
-        bullets.erase(std::remove_if(bullets.begin(), bullets.end(),
+        bullets.erase(remove_if(bullets.begin(), bullets.end(),
                                      [](Bullet &b) {return !b.active;}), bullets.end());
     }
 
@@ -216,7 +217,7 @@ public:
     bool running;
     vector<Wall> walls;
     PlayerTank player;
-    int enemyNumber = 3;
+    int enemyNumber = 5;
     vector<EnemyTank> enemies;
 
     Game() : player(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_SIZE) {
@@ -326,7 +327,7 @@ public:
                 }
             }
         }
-        enemies.erase(std::remove_if(enemies.begin(), enemies.end(),
+        enemies.erase(remove_if(enemies.begin(), enemies.end(),
                                      [](EnemyTank &e) { return !e.active; }), enemies.end());
         if (enemies.empty()) {
             running = false;
