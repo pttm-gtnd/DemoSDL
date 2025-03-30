@@ -7,3 +7,57 @@
 	<vector>
 	<algorithm>
 
+1743312206 source:c:\codec++\demosdl\bullet.cpp
+	"Bullet.h"
+	"Constants.h"
+
+1743312206 c:\codec++\demosdl\bullet.h
+	<SDL.h>
+
+1743312206 c:\codec++\demosdl\constants.h
+
+1743312206 source:c:\codec++\demosdl\enemytank.cpp
+	"EnemyTank.h"
+	"Constants.h"
+	<SDL.h>
+	<cstdlib>
+	<algorithm>
+
+1743312206 c:\codec++\demosdl\enemytank.h
+	<vector>
+	"Bullet.h"
+	"Wall.h"
+
+1743312206 c:\codec++\demosdl\wall.h
+	<SDL.h>
+
+1743312206 source:c:\codec++\demosdl\game.cpp
+	"Game.h"
+	<iostream>
+	"Constants.h"
+	<algorithm>
+
+1743312206 c:\codec++\demosdl\game.h
+	<SDL.h>
+	<vector>
+	"PlayerTank.h"
+	"EnemyTank.h"
+	"Wall.h"
+
+1743312206 c:\codec++\demosdl\playertank.h
+	<vector>
+	"Bullet.h"
+	"Wall.h"
+
+1743312206 source:c:\codec++\demosdl\main.cpp
+	"Game.h"
+
+1743312206 source:c:\codec++\demosdl\playertank.cpp
+	"PlayerTank.h"
+	"Constants.h"
+	<algorithm>
+
+1743312206 source:c:\codec++\demosdl\wall.cpp
+	"Wall.h"
+	"Constants.h"
+
