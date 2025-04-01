@@ -24,7 +24,7 @@ Game::Game() : player(((MAP_WIDTH -1) / 2) * TILE_SIZE, (MAP_HEIGHT - 2) * TILE_
             cerr << "Renderer could not be created! SDL_Error: " << SDL_GetError() << endl;
             running = false;
         }
-        SDL_Surface* tempSurface = IMG_Load("C:/Users/PC/Downloads/background.jpg");
+        SDL_Surface* tempSurface = IMG_Load("C:/Users/PC/Downloads/background.png");
         if (tempSurface) {
         background = SDL_CreateTextureFromSurface(renderer, tempSurface);
         SDL_FreeSurface(tempSurface);
